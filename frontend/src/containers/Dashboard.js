@@ -207,12 +207,7 @@ const Dashboard = (props) => {
           <Grid item xs={12} sm={12} lg={6}>
             <Paper
               classes={{ root: classes.paperTheme }}
-              style={{
-                ...tileStyle,
-                "&:hover": {
-                  cursor: "pointer",
-                },
-              }}
+              style={tileStyle}
               onClick={() => setPieOpen(true)}
             >
               <PieChart data={pieData} interactive={false} />
@@ -220,7 +215,7 @@ const Dashboard = (props) => {
           </Grid>
         </Grid>
         <Location open={isLocationOpen} toggle={setLocationOpen} />
-        <Pie open={isPieOpen} toggle={setPieOpen} />
+        <Pie open={isPieOpen} toggle={setPieOpen} data={pieData} />
         <Time open={isTimeOpen} toggle={setTimeOpen} />
       </div>
     );

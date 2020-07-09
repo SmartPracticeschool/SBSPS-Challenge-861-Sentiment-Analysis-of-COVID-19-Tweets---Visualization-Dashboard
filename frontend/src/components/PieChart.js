@@ -1,18 +1,19 @@
 import React from "react";
 import { ResponsivePieCanvas } from "@nivo/pie";
 
-const PieChart = ({ data, interactive }) => (
+const PieChart = ({ data }) => (
   <ResponsivePieCanvas
     data={data}
-    margin={{ top: 10, right: 10, bottom: 10, left: 10 }}
+    margin={{ top: 30, right: 0, bottom: 10, left: 0 }}
     pixelRatio={1}
     innerRadius={0.5}
     padAngle={0.7}
     cornerRadius={3}
     colors={{ scheme: "dark2" }}
     borderColor={{ from: "color", modifiers: [["darker", 0.6]] }}
+    radialLabelsSkipAngle={10}
     radialLabelsTextXOffset={6}
-    radialLabelsTextColor={{ from: "color", modifiers: [] }}
+    radialLabelsTextColor="#ffffff"
     radialLabelsLinkOffset={0}
     radialLabelsLinkDiagonalLength={16}
     radialLabelsLinkHorizontalLength={24}
@@ -23,22 +24,9 @@ const PieChart = ({ data, interactive }) => (
     animate={true}
     motionStiffness={90}
     motionDamping={15}
-    sortByValue={true}
-    isInteractive={interactive}
-    legends={[
-      {
-        anchor: "right",
-        direction: "column",
-        itemWidth: 60,
-        itemHeight: 30,
-        itemsSpacing: 2,
-        symbolSize: 14,
-        symbolShape: "circle",
-        itemTextColor: "rgba(255,255,255,0.6)",
-        translateX: -50,
-      },
-    ]}
+    interactive={false}
     theme={{
+      fontSize: 14,
       tooltip: {
         container: {
           backgroundColor: "#121212",
