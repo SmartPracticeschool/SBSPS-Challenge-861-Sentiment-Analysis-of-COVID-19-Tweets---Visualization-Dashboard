@@ -7,10 +7,10 @@ const server = app.listen(process.env.PORT, () => {
   console.log(`server running on port ${process.env.PORT}`);
 });
 
-app.use(express.static(path.join(__dirname, "/build")));
+app.use(express.static(path.join(__dirname, "frontend/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/build/index.html"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/build/index.html"));
 });
 
 const io = require("socket.io")(server);
