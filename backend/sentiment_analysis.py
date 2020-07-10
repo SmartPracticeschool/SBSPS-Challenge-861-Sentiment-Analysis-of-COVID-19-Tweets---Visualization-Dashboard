@@ -35,7 +35,7 @@ class listener(StreamListener):
           c.execute("INSERT INTO sentiment (unix, created_at, sentiment, user_location, place) VALUES (?, ?, ?, ?, ?)",
                 (data['timestamp_ms'], data['created_at'], sentiment, data['user']['location'], data['place']))
           conn.commit()
-          if listener.count == 20:
+          if listener.count == 100:
             return False
       except KeyError as e:
           print(str(e))
