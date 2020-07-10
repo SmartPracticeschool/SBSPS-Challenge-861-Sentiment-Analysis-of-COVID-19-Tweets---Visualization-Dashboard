@@ -25,7 +25,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Location = ({ open, toggle }) => {
+const Location = ({ open, toggle, apikey }) => {
   const classes = useStyles();
 
   return (
@@ -50,7 +50,7 @@ const Location = ({ open, toggle }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Map interactive={true} />
+      <Map interactive={true} apikey={apikey} />
     </Dialog>
   );
 };

@@ -92,14 +92,11 @@ const Dashboard = (props) => {
 
   // getting data from backend
   useEffect(() => {
-    console.log("dash");
     socket.emit("dashboard");
     socket.on("pie", (data) => {
-      console.log(data);
       setPieData(data);
     });
     socket.on("line", (data) => {
-      console.log("line", data);
       setLineData(data);
       setLoading(false);
     });

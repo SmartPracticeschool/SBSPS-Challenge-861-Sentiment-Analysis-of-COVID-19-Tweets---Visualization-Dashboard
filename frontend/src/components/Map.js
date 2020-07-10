@@ -13,7 +13,7 @@ const Map = ({ interactive }) => {
       height="100%"
       width="100%"
       mapStyle="mapbox://styles/mohrsal/ckcai67x12aer1inyvqvgvs3v"
-      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_API}
+      mapboxApiAccessToken="pk.eyJ1IjoibW9ocnNhbCIsImEiOiJja2MyMGl2bXoxcXhwMnhsamhrejZlc3BiIn0.CLWjEj0GyozFbThndAZHhw"
       onViewportChange={
         interactive ? (viewport) => setViewPort(viewport) : null
       }
