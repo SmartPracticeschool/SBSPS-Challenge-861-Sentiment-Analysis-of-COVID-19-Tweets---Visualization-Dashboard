@@ -10,21 +10,16 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Divider,
   Typography,
   CircularProgress,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import ShowChartIcon from "@material-ui/icons/ShowChart";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
-import PieChartIcon from "@material-ui/icons/PieChart";
-import WhatshotIcon from "@material-ui/icons/Whatshot";
 import HomeIcon from "@material-ui/icons/Home";
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import InfoIcon from "@material-ui/icons/Info";
 import { makeStyles } from "@material-ui/core/styles";
 import PieChart from "../components/PieChart.js";
 import LineChart from "../components/LineChart.js";
-import { LineData } from "../TempData.js";
 import Location from "./Location.js";
 import Pie from "./Pie.js";
 import Time from "./Time.js";
@@ -52,7 +47,7 @@ const useStyles = makeStyles({
 const tileStyle = {
   height: "30vh",
   minHeight: "200px",
-  minWidth: "500px",
+  minWidth: "400px",
   margin: "20px",
 };
 
@@ -92,6 +87,9 @@ const Dashboard = (props) => {
   //piechart data
   const [pieData, setPieData] = useState(null);
 
+  //line data
+  const [lineData, setLineData] = useState(null);
+
   // getting data from backend
   useEffect(() => {
     console.log("dash");
@@ -99,6 +97,10 @@ const Dashboard = (props) => {
     socket.on("pie", (data) => {
       console.log(data);
       setPieData(data);
+    });
+    socket.on("line", (data) => {
+      console.log("line", data);
+      setLineData(data);
       setLoading(false);
     });
   }, []);
@@ -129,45 +131,25 @@ const Dashboard = (props) => {
           onClose={toggleDrawer(false)}
           classes={{ paper: classes.drawerTheme }}
         >
-          <List style={{ width: "auto" }}>
+          <List style={{ width: "250px" }}>
             <ListItem button onClick={() => props.history.push("/")}>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText primary="Home" />
             </ListItem>
-            <Divider classes={{ root: classes.dividerColor }} />
             <ListItem button onClick={() => props.history.push("/dashboard")}>
               <ListItemIcon>
                 <DashboardIcon />
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={() => props.history.push("/about")}>
               <ListItemIcon>
-                <ShowChartIcon />
+                <InfoIcon />
               </ListItemIcon>
-              <ListItemText primary="Time Graph" />
+              <ListItemText primary="About" />
             </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <LocationOnIcon />
-              </ListItemIcon>
-              <ListItemText primary="Location Based" />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <WhatshotIcon />
-              </ListItemIcon>
-              <ListItemText primary="Heat Map" />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <PieChartIcon />
-              </ListItemIcon>
-              <ListItemText primary="Pie Chart" />
-            </ListItem>
-            <Divider classes={{ root: classes.dividerColor }} />
           </List>
         </Drawer>
         {/* Graph components - tiles */}
@@ -184,7 +166,7 @@ const Dashboard = (props) => {
               style={tileStyle}
               onClick={() => setTimeOpen(true)}
             >
-              <LineChart data={LineData} />
+              <LineChart data={lineData} />
             </Paper>
           </Grid>
 
@@ -210,7 +192,12 @@ const Dashboard = (props) => {
               style={tileStyle}
               onClick={() => setPieOpen(true)}
             >
-              <PieChart data={pieData} interactive={false} />
+              <Typography variant="h5" align="center">
+                Polarity Distribution
+              </Typography>
+              <div style={{ height: "90%" }}>
+                <PieChart data={pieData} interactive={false} />
+              </div>
             </Paper>
           </Grid>
         </Grid>

@@ -4,7 +4,7 @@ import { ResponsivePieCanvas } from "@nivo/pie";
 const PieChart = ({ data }) => (
   <ResponsivePieCanvas
     data={data}
-    margin={{ top: 30, right: 0, bottom: 10, left: 0 }}
+    margin={{ top: 20, right: 0, bottom: 10, left: 0 }}
     pixelRatio={1}
     innerRadius={0.5}
     padAngle={0.7}
