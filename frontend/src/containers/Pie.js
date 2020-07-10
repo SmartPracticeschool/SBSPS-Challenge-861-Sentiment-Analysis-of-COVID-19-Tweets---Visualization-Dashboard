@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
     backgroundColor: "#64b5f6",
-    // background: "linear-gradient(rgba(255,255,255,.16), rgba(255,255,255,.16))",
   },
   title: {
     marginLeft: theme.spacing(2),
