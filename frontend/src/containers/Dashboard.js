@@ -52,7 +52,7 @@ const tileStyle = {
 };
 
 //socket.io
-const socket = io(`${process.env.REACT_APP_URL}`);
+const socket = io("/");
 
 //Dashboard component
 const Dashboard = (props) => {
