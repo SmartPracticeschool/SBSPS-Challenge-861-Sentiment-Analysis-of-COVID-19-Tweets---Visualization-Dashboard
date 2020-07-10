@@ -90,8 +90,8 @@ const allData = () => {
     list[0].data.push({ x: flag, y: val.pos });
     list[1].data.push({ x: flag, y: val.neg });
     list[2].data.push({ x: flag, y: val.neu });
-    console.log(JSON.stringify(list, null, 4));
-    console.log(pie);
+    // console.log(JSON.stringify(list, null, 4));
+    // console.log(pie);
     io.emit("pie", pie);
     io.emit("line", list);
   });

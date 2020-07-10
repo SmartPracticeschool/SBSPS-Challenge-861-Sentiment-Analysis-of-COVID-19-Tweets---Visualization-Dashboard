@@ -23,9 +23,10 @@ import LineChart from "../components/LineChart.js";
 import Location from "./Location.js";
 import Pie from "./Pie.js";
 import Time from "./Time.js";
+import BarChart from "../components/BarChart.js";
 import io from "socket.io-client";
-
 import Map from "../components/Map.js";
+import { data } from "../TempData.js";
 
 const useStyles = makeStyles({
   drawerTheme: {
@@ -53,6 +54,7 @@ const tileStyle = {
 
 //socket.io
 const socket = io("/");
+// const socket = io("http://localhost:3001");
 
 //Dashboard component
 const Dashboard = (props) => {
@@ -179,7 +181,7 @@ const Dashboard = (props) => {
 
           <Grid item xs={12} sm={12} lg={6}>
             <Paper classes={{ root: classes.paperTheme }} style={tileStyle}>
-              Time Graph
+              <BarChart data={data} />
             </Paper>
           </Grid>
 
