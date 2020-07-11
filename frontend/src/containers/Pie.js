@@ -14,7 +14,7 @@ import { ResponsivePieCanvas } from "@nivo/pie";
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
-    backgroundColor: "#64b5f6",
+    backgroundColor: "#42a5f5",
   },
   title: {
     marginLeft: theme.spacing(2),

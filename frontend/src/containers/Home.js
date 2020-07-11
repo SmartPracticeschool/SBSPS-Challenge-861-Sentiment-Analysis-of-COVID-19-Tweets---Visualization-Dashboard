@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/Home.css";
 import { Typography, Grid, Button } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import InfoIcon from "@material-ui/icons/Info";
+import GroupIcon from "@material-ui/icons/Group";
 
 const Home = (props) => {
   return (
@@ -31,11 +31,11 @@ const Home = (props) => {
           <Button
             variant="contained"
             color="primary"
-            startIcon={<InfoIcon />}
+            startIcon={<GroupIcon />}
             style={{ margin: "10px" }}
-            onClick={() => props.history.push("/about")}
+            onClick={() => props.history.push("/team")}
           >
-            About
+            Meet the Team
           </Button>
         </Grid>
       </Grid>

@@ -78,7 +78,7 @@ const Profile = ({ name, image, role, github, linkedin, history }) => {
   );
 };
 
-const About = (props) => {
+const Team = (props) => {
   const squad = [
     {
       image: "nipun",
@@ -116,7 +116,7 @@ const About = (props) => {
         variant="h2"
         style={{ margin: "0px 0 20px 0" }}
       >
-        About
+        Meet the Team
       </Typography>
       <Grid
         container
@@ -144,4 +144,4 @@ const About = (props) => {
   );
 };
 
-export default About;
+export default Team;
