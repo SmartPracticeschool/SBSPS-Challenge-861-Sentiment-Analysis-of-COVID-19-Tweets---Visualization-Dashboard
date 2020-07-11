@@ -104,7 +104,7 @@ const Team = (props) => {
     {
       image: "keshav",
       name: "Kesava Karri",
-      role: "Front-end Dev . Data Scientist",
+      role: "Front-end Dev · Data Scientist",
       linkedin: "https://www.linkedin.com/in/kesava-karri/",
       github: false,
     },
