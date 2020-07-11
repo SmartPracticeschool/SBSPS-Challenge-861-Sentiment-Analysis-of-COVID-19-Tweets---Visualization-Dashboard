@@ -16,7 +16,7 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import HomeIcon from "@material-ui/icons/Home";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import InfoIcon from "@material-ui/icons/Info";
+import GroupIcon from "@material-ui/icons/Group";
 import { makeStyles } from "@material-ui/core/styles";
 import PieChart from "../components/PieChart.js";
 import LineChart from "../components/LineChart.js";
@@ -53,8 +53,8 @@ const tileStyle = {
 };
 
 //socket.io
-const socket = io("/");
-// const socket = io("http://localhost:3001");
+// const socket = io("/");
+const socket = io("http://localhost:3001");
 
 //Dashboard component
 const Dashboard = (props) => {
@@ -143,11 +143,11 @@ const Dashboard = (props) => {
               </ListItemIcon>
               <ListItemText primary="Dashboard" />
             </ListItem>
-            <ListItem button onClick={() => props.history.push("/about")}>
+            <ListItem button onClick={() => props.history.push("/team")}>
               <ListItemIcon>
-                <InfoIcon />
+                <GroupIcon />
               </ListItemIcon>
-              <ListItemText primary="About" />
+              <ListItemText primary="Meet the Team" />
             </ListItem>
           </List>
         </Drawer>
