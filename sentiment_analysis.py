@@ -8,6 +8,7 @@ import time
 import requests
 import urllib.parse
 import ibm_db_dbi as db
+import cred
 
 class listener(StreamListener):
   def on_connect(self):
@@ -42,10 +43,10 @@ class listener(StreamListener):
 if __name__ == "__main__":
   conn = db.connect("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-07.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=rjm75059;PWD=r+b90qw9kxmpx2g2;Security=SSL;", "", "")
   c = conn.cursor()
-  ckey = "rkujjPIwBuiEWZd7nHDvWjq3g"
-  csecret = "6OiiozMyXZCQ1Tu4UiuPNkm3W0gCkWKdgXoHsfhnbNyU27fic6"
-  atoken = "738052722637824000-Ms3BLtXJAbBn9pNm6AakqyH9NsQmgWo"
-  asecret = "8zlkUHbzQEfmgo8WdkrD2bCKot6cDGGQEL2BuP6Ti1MC0"
+  ckey = cred.CONSUMER_KEY
+  csecret = cred.CONSUMER_TOKEN
+  atoken = cred.ACCESS_TOKEN
+  asecret = cred.ACCESS_TOKEN_SECRET
   try:
       auth = OAuthHandler(ckey, csecret)
       auth.set_access_token(atoken, asecret)
