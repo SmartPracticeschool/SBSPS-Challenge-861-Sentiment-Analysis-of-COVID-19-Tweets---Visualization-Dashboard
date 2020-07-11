@@ -118,6 +118,14 @@ const Team = (props) => {
       >
         Meet the Team
       </Typography>
+      <Typography align="center" style={{ margin: "0 20px 20px 20px" }}>
+        We are a bunch of developers, gamers and huge fans of the MARVEL
+        cinematic universe. Graduates from IIIT Trichy, we are most delighted to
+        showcase this interactive dashboard.
+      </Typography>
+      <Typography align="center">
+        {`</> with lots of ❤️ by "WE ARE GROOT"`}
+      </Typography>
       <Grid
         container
         direcion="row"
