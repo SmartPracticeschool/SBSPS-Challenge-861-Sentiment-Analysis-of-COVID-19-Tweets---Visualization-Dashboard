@@ -104,8 +104,8 @@ const About = (props) => {
     {
       image: "keshav",
       name: "Kesava Karri",
-      role: "UI/UX Developer",
-      linkedin: "https://www.linkedin.com/in/aditya-kumar-34a901151/",
+      role: "Front-end Dev . Data Scientist",
+      linkedin: "https://www.linkedin.com/in/kesava-karri/",
       github: false,
     },
   ];
