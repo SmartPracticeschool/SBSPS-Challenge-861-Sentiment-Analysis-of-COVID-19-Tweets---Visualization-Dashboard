@@ -2,41 +2,37 @@ from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 import json
-import sqlite3
 from textblob import TextBlob 
 from unidecode import unidecode
 import time
-import cred
-
-def create_table():
-  try:
-      c.execute("CREATE TABLE IF NOT EXISTS sentiment(unix REAL, created_at TIMESTAMP NOT NULL, sentiment REAL, user_location TEXT, place TEXT)")
-      c.execute("CREATE INDEX fast_unix ON sentiment(unix)")
-      c.execute("CREATE INDEX fast_created_at ON sentiment(created_at)")
-      c.execute("CREATE INDEX fast_sentiment ON sentiment(sentiment)")
-      c.execute("CREATE INDEX fast_user_location ON sentiment(user_location)")
-      c.execute("CREATE INDEX fast_place ON sentiment(place)")
-      conn.commit()
-  except Exception as e:
-      print(str(e))
+import requests
+import urllib.parse
+import ibm_db_dbi as db
 
 class listener(StreamListener):
-  count = 0
   def on_connect(self):
     print("Connected!")
   def on_data(self, data):
       try:
           data = json.loads(data)
-          listener.count += 1
           tweet = unidecode(data['text'])
           analysis = TextBlob(tweet)
-          sentiment = analysis.sentiment.polarity
-          print(data['created_at'])
-          c.execute("INSERT INTO sentiment (unix, created_at, sentiment, user_location, place) VALUES (?, ?, ?, ?, ?)",
-                (data['timestamp_ms'], data['created_at'], sentiment, data['user']['location'], data['place']))
+          polarity = analysis.sentiment.polarity
+          subjectivity = analysis.sentiment.subjectivity
+          address = data['user']['location']
+          lati = None
+          longi = None
+          if address != None:
+            address = unidecode(address)
+            url = 'https://nominatim.openstreetmap.org/search/' + urllib.parse.quote(address) +'?format=json'
+            response = requests.get(url).json()
+            if len(response) > 0:
+              lati = response[0]["lat"]
+              longi = response[0]["lon"]
+          print(data['timestamp_ms'], polarity, subjectivity , lati, longi)
+          c.execute("INSERT INTO sentiment (unix, pol, sub, lati, longi) VALUES (?, ?, ?, ?, ?)",
+                (data['timestamp_ms'], polarity, subjectivity, lati, longi))
           conn.commit()
-          if listener.count == 100:
-            return False
       except KeyError as e:
           print(str(e))
 
@@ -44,14 +40,12 @@ class listener(StreamListener):
       print(status)
 
 if __name__ == "__main__":
-  conn = sqlite3.connect('twitter.db')
+  conn = db.connect("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-07.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=rjm75059;PWD=r+b90qw9kxmpx2g2;Security=SSL;", "", "")
   c = conn.cursor()
-  create_table()
-  #consumer key, consumer secret, access token, access secret.
-  ckey = cred.CONSUMER_KEY
-  csecret = cred.CONSUMER_TOKEN
-  atoken = cred.ACCESS_TOKEN
-  asecret = cred.ACCESS_TOKEN_SECRET
+  ckey = "rkujjPIwBuiEWZd7nHDvWjq3g"
+  csecret = "6OiiozMyXZCQ1Tu4UiuPNkm3W0gCkWKdgXoHsfhnbNyU27fic6"
+  atoken = "738052722637824000-Ms3BLtXJAbBn9pNm6AakqyH9NsQmgWo"
+  asecret = "8zlkUHbzQEfmgo8WdkrD2bCKot6cDGGQEL2BuP6Ti1MC0"
   try:
       auth = OAuthHandler(ckey, csecret)
       auth.set_access_token(atoken, asecret)
