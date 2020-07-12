@@ -1,3 +1,4 @@
+# ignore 
 .gitignore
 .md
 .env
@@ -7,8 +8,8 @@ test.txt
 
 /node_modules
 
-/frontend/node_modules
-/frontend/public/
-/frontend/src
-/frontend/package.json
-/frontend/package-lock.json
+/frontend/
+/core
+
+#do not ignore
+!/frontend/build/*
