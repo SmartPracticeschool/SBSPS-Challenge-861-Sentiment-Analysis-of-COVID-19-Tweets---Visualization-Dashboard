@@ -78,7 +78,7 @@ const Profile = ({ name, image, role, github, linkedin, history }) => {
   );
 };
 
-const About = (props) => {
+const Team = (props) => {
   const squad = [
     {
       image: "nipun",
@@ -104,8 +104,8 @@ const About = (props) => {
     {
       image: "keshav",
       name: "Kesava Karri",
-      role: "UI/UX Developer",
-      linkedin: "https://www.linkedin.com/in/aditya-kumar-34a901151/",
+      role: "Front-end Dev · Data Scientist",
+      linkedin: "https://www.linkedin.com/in/kesava-karri/",
       github: false,
     },
   ];
@@ -116,7 +116,15 @@ const About = (props) => {
         variant="h2"
         style={{ margin: "0px 0 20px 0" }}
       >
-        About
+        Meet the Team
+      </Typography>
+      <Typography align="center" style={{ margin: "0 20px 20px 20px" }}>
+        We are a bunch of developers, gamers and huge fans of the MARVEL
+        cinematic universe. Graduates from IIIT Trichy, we are most delighted to
+        showcase this interactive dashboard.
+      </Typography>
+      <Typography align="center">
+        {`</> with lots of ❤️ by "WE ARE GROOT"`}
       </Typography>
       <Grid
         container
@@ -144,4 +152,4 @@ const About = (props) => {
   );
 };
 
-export default About;
+export default Team;
