@@ -1,0 +1,14 @@
+.gitignore
+.md
+.env
+
+test.js
+test.txt
+
+/node_modules
+
+/frontend/node_modules
+/frontend/public/
+/frontend/src
+/frontend/package.json
+/frontend/package-lock.json
