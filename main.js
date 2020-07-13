@@ -12,7 +12,7 @@ const analyzer = new SentimentAnalyzer('English', PorterStemmer, 'afinn');
 const express = require("express");
 const app = express();
 const fs = require('fs');
-const moment = require('moment')
+const moment = require('moment');
 // const sqlite3 = require("sqlite3").verbose();
 // let db = new sqlite3.Database("./twitter.db");
 
@@ -48,9 +48,13 @@ const params = ['#covidindia','#covid_19india','#covid19india','#GCCCovid19SOS',
 ,'#Lockdown4','#lockdown4guidelines','#socialdistancingIndia','#stayathomeindia',
 '#StayHomeIndia','#CoronaUpdatesInIndia']
 
+// created_at format
+const format = 'dd MMM DD HH:mm:ss ZZ YYYY';
+const lang = 'en';
+
 // get tweets
 const getData = () => {
-  fs.readFile('piecheckpoint.json',(err,data) => {
+  fs.readFile('checkpoint.json',(err,data) => {
     if (err) throw err;
     else{
       created_flag = JSON.parse(data)[0];
@@ -58,18 +62,62 @@ const getData = () => {
       pie = JSON.parse(data)[1];
     }
   })
-  T.get('search/tweets', { q: params.join(' OR ') ,count: 25 }, (err, data, response) => {
+  var line = [
+    {
+      id :'positive',
+      color:"hsl(360, 70%, 50%)",
+      data :[]
+    },
+    {
+      id:'negative',
+      color:"hsl(128, 70%, 50%)",
+      data:[]
+    },
+    {
+      id :'neutral',
+      color :"hsl(198, 70%, 50%)",
+      data :[]
+    }
+  ];
+  T.get('search/tweets', { q: params.join(' OR ') ,count: 100 }, (err, data, response) => {
     if (err){
       throw err;
     } else {
+      var line_flag = moment(data.statuses[0].created_at,format,lang).valueOf();
+      var pos_obj = 0, neg_obj=0, neu_obj=0;
       data.statuses.map((tweet) => {
-          var timestamp = moment(tweet.created_at, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').valueOf();
+          var senti_flag = null;
+          var timestamp = moment(tweet.created_at,format,lang).valueOf();
           if (timestamp>created_flag){
             var text = unidecode(tweet.text);
             var sentiment = cleanText(text);
-            if (sentiment>0){ pie[0].value++; }
-            else if (sentiment<0){ pie[1].value++; }
-            else { pie[2].value++; }
+            if (sentiment>0){ 
+              pie[0].value++; 
+              senti_flag = 'pos';
+            }else if (sentiment<0){ 
+              pie[1].value++; 
+              senti_flag = 'neg';
+            }
+            else { 
+              pie[2].value++; 
+              senti_flag = 'neu'
+            }
+            var time_date = new Date(timestamp).getUTCMinutes();
+            var line_date = new Date(line_flag).getUTCMinutes();
+            if (time_date === line_date){
+              if (senti_flag==='pos') pos_obj++;
+              else if (senti_flag==='neg') neg_obj++;
+              else if (senti_flag==='neu') neu_obj++;
+            }
+            else if (time_date !== line_date){
+              line[0].data.unshift({x:line_flag,y:pos_obj});
+              line[1].data.unshift({x:line_flag,y:neg_obj});
+              line[2].data.unshift({x:line_flag,y:neu_obj});
+              if (senti_flag==='pos') pos_obj = 1,neg_obj=0,neu_obj=0;
+              else if (senti_flag==='neg') pos_obj = 0,neg_obj=1,neu_obj=0;
+              else if (senti_flag==='neu') pos_obj = 0,neg_obj=0,neu_obj=1;
+              line_flag = timestamp;
+            }
             xmlhttp.open('GET','https://nominatim.openstreetmap.org/search/'+encodeURI(tweet.user.location)+'?format=json&limit=1&countrycodes=in',false);
             xmlhttp.send(null);
             var resp = JSON.parse(xmlhttp.responseText);
@@ -79,30 +127,35 @@ const getData = () => {
             }
           }
       })
-      created_flag = moment(data.statuses[0].created_at, 'dd MMM DD HH:mm:ss ZZ YYYY', 'en').valueOf();
-      fs.writeFile('piecheckpoint.json',JSON.stringify([created_flag,pie]),(err) => { if (err) throw err;})
+      line[0].data.unshift({x:line_flag,y:pos_obj});
+      line[1].data.unshift({x:line_flag,y:neg_obj});
+      line[2].data.unshift({x:line_flag,y:neu_obj});
+      created_flag = moment(data.statuses[0].created_at,format,lang).valueOf();
+      fs.writeFile('checkpoint.json',JSON.stringify([created_flag,pie,line]),(err) => { if (err) throw err;})
       console.log(created_flag);
       io.emit("pie", pie);
+      io.emit("line",line);
     }
   })
 }
 
 sendData = () => {
-  fs.readFile('piecheckpoint.json',(err,data) => {
+  fs.readFile('checkpoint.json',(err,data) => {
     if (err) throw err;
     else{
       var pie = JSON.parse(data)[1];
+      var line = JSON.parse(data)[2];
       io.emit('pie',pie);
+      io.emit('line',line);
     }
   });
 }
 
 io.on("connection", (socket) => {
   console.log("client connected");
-  socket.on("dashboard", () => {
+  // socket.on("dashboard", () => {
+  //   sendData();
+  // });
     sendData();
-  });
-    // sendData();
 });
-
-setInterval(getData,1000*60*1);
+setInterval(getData,1000*60*5);

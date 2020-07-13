@@ -6,9 +6,11 @@
         <script>
             var socket = io('http://127.0.0.1:3001');
             socket.on('pie', function(data) {
-                // addMessage(data);
-                console.log(data)
+                console.log(data);
             });
+            socket.on('line', (data) => {
+                console.log(data);
+            })
             socket.on('error', console.error.bind(console));
             socket.on('message', console.log.bind(console));
             function addMessage(message) {
