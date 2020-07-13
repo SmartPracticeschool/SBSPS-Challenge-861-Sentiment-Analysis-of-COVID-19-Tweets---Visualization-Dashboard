@@ -1,1 +1,7 @@
 Flask
+tweepy
+unidecode
+textblob
+requests
+pymongo[srv]
+python-dotenv
