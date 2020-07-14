@@ -60,7 +60,8 @@ class listener(StreamListener):
             if address != None:
                 address = unidecode(address)
                 url = 'https://nominatim.openstreetmap.org/search/' + \
-                    urllib.parse.quote(address) + '?format=json'
+                    urllib.parse.quote(address) + \
+                    '?format=json&limit=1&countrycodes=in'
                 response = requests.get(url).json()
                 if len(response) > 0:
                     lati = response[0]["lat"]
