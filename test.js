@@ -67,4 +67,3 @@
 // }
 
 // twitstream();
-const file = new File('checkpoint.json')

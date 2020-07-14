@@ -30,12 +30,13 @@ const main = async() =>{
   var tweet_id_fg = JSON.parse(data)[0];
   var pie = JSON.parse(data)[1];
   var line = JSON.parse(data)[2][0];
-  var sub_pie = JSON.parse(data)[3];
+  var sub_bar = JSON.parse(data)[3][0];
   var loc = JSON.parse(data)[4];
   const cursor = client.db('sentiment').collection('tweets').find({tweet_id:{$gt:tweet_id_fg}}).sort({_id:1});
   const result = await cursor.toArray();
   if (result.length>0){
     var pos_obj = 0, neg_obj=0, neu_obj=0;
+    var factual = 0,emotional = 0;
     console.log(result.length);
     result.forEach((res) => {
       var polarity = res.polarity;
@@ -53,9 +54,9 @@ const main = async() =>{
         neu_obj++;
         pol_flag = 0;
       }
-      var subjectivity = res.subjectivity;
-      if (subjectivity >= 0.5) sub_pie[0].value++;
-      else sub_pie[1].value++;
+      var subj = res.subjectivity;
+      if (subj >= 0.5) emotional++;
+      else factual++;
       var lat = res.latitude;
       var long = res.longitude;
       if (lat !== null & long !== null){
@@ -67,6 +68,8 @@ const main = async() =>{
       tweet_id_fg = res.tweet_id;
     })
   }
+  sub_bar.push({x:time_str,objectivity:factual,subjectivity:emotional})
+  if (sub_bar.length>7) sub_bar.shift();
   line[0].data.push({x:time_str,y:pos_obj});
   line[1].data.push({x:time_str,y:neg_obj});
   line[2].data.push({x:time_str,y:neu_obj});
@@ -75,12 +78,13 @@ const main = async() =>{
     line[1].data.shift();
     line[2].data.shift();
   }
-  console.log(tweet_id_fg,pie,JSON.stringify(line),sub_pie,loc)
-  fs.writeFileSync("checkpoint.json",JSON.stringify([tweet_id_fg,pie,[line,2],sub_pie,loc]))
+  console.log(tweet_id_fg,pie,JSON.stringify(line),sub_bar)
+  const timeperiod = '2minutes';
+  fs.writeFileSync("checkpoint.json",JSON.stringify([tweet_id_fg,pie,[line,timeperiod],[sub_bar,timeperiod],loc]))
   await client.close();
   io.emit("pie", pie);
-  io.emit("line",[line,2]);
-  io.emit("sub_pie",sub_pie);
+  io.emit("line",[line,'2minutes']);
+  io.emit("sub_bar",[sub_bar,'2minutes']);
   io.emit("loc",loc)
 }
 
@@ -88,11 +92,11 @@ allData = () =>{
   data = fs.readFileSync('checkpoint.json');
   var pie = JSON.parse(data)[1];
   var line = JSON.parse(data)[2];
-  var sub_pie = JSON.parse(data)[3];
+  var sub_bar = JSON.parse(data)[3];
   var loc = JSON.parse(data)[4];
   io.emit("pie", pie);
   io.emit("line",line);
-  io.emit("sub_pie",sub_pie);
+  io.emit("sub_bar",sub_bar);
   io.emit('loc',loc);
 }
 
