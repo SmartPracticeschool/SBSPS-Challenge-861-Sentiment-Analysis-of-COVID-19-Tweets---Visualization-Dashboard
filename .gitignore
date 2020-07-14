@@ -3,4 +3,5 @@
 .env
 .env.production
 cred.py
+test.js
 /build
