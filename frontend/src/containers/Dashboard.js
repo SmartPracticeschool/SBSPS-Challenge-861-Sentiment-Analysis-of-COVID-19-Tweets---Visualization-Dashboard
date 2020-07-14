@@ -21,8 +21,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import PieChart from "../components/PieChart.js";
 import LineChart from "../components/LineChart.js";
 import Location from "./Location.js";
-import Pie from "./Pie.js";
-import Time from "./Time.js";
 import BarChart from "../components/BarChart.js";
 import io from "socket.io-client";
 import Map from "../components/Map.js";
@@ -53,8 +51,8 @@ const tileStyle = {
 };
 
 //socket.io
-const socket = io("/");
-// const socket = io("http://localhost:3001");
+// const socket = io("/");
+const socket = io("http://localhost:3001");
 
 //Dashboard component
 const Dashboard = (props) => {
@@ -76,12 +74,6 @@ const Dashboard = (props) => {
 
   //Location Dialog states and functions
   const [isLocationOpen, setLocationOpen] = useState(false);
-
-  //Pie Chart Dialog states and functions
-  const [isPieOpen, setPieOpen] = useState(false);
-
-  //Time ghaph dialog states and functions
-  const [isTimeOpen, setTimeOpen] = useState(false);
 
   //loading
   const [isLoading, setLoading] = useState(true);
@@ -160,11 +152,7 @@ const Dashboard = (props) => {
           alignItems="center"
         >
           <Grid item xs={12} sm={12} lg={6}>
-            <Paper
-              classes={{ root: classes.paperTheme }}
-              style={tileStyle}
-              onClick={() => setTimeOpen(true)}
-            >
+            <Paper classes={{ root: classes.paperTheme }} style={tileStyle}>
               <LineChart data={lineData} />
             </Paper>
           </Grid>
@@ -186,11 +174,7 @@ const Dashboard = (props) => {
           </Grid>
 
           <Grid item xs={12} sm={12} lg={6}>
-            <Paper
-              classes={{ root: classes.paperTheme }}
-              style={tileStyle}
-              onClick={() => setPieOpen(true)}
-            >
+            <Paper classes={{ root: classes.paperTheme }} style={tileStyle}>
               <Typography variant="h5" align="center">
                 Polarity Distribution
               </Typography>
@@ -201,8 +185,6 @@ const Dashboard = (props) => {
           </Grid>
         </Grid>
         <Location open={isLocationOpen} toggle={setLocationOpen} />
-        <Pie open={isPieOpen} toggle={setPieOpen} data={pieData} />
-        <Time open={isTimeOpen} toggle={setTimeOpen} />
       </div>
     );
   }
