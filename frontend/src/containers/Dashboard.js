@@ -84,6 +84,12 @@ const Dashboard = (props) => {
   //line data
   const [lineData, setLineData] = useState(null);
 
+  //bar data
+  const [barData, setBarData] = useState(null);
+
+  //location data
+  const [locationData, setLocationData] = useState(null);
+
   // getting data from backend
   useEffect(() => {
     socket.emit("dashboard");
@@ -91,9 +97,13 @@ const Dashboard = (props) => {
       setPieData(data);
     });
     socket.on("line", (data) => {
-      var axis = "2 minutes";
+      setLineData(data);
+    });
+    socket.on("sub_bar", (data) => {
       console.log(data);
-      setLineData([data, axis]);
+    });
+    socket.on("location", (data) => {
+      setLocationData(data);
       setLoading(false);
     });
   }, []);
@@ -165,7 +175,7 @@ const Dashboard = (props) => {
               style={tileStyle}
               onClick={() => setLocationOpen(true)}
             >
-              <Map interactive={false} />
+              <Map interactive={false} data={locationData} />
             </Paper>
           </Grid>
 
@@ -186,7 +196,11 @@ const Dashboard = (props) => {
             </Paper>
           </Grid>
         </Grid>
-        <Location open={isLocationOpen} toggle={setLocationOpen} />
+        <Location
+          open={isLocationOpen}
+          toggle={setLocationOpen}
+          data={locationData}
+        />
       </div>
     );
   }
