@@ -20,7 +20,7 @@ const io = require("socket.io")(server);
 const {MongoClient} = require('mongodb');
 const uri = `mongodb+srv://admin:${process.env.db_pass}@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true`;
 
-async function main(){
+const main = async() =>{
   const now = new Date()
   const time_str = now.getHours() + ':' + now.getMinutes()
   const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -29,8 +29,9 @@ async function main(){
   var data = fs.readFileSync('checkpoint.json')
   var tweet_id_fg = JSON.parse(data)[0];
   var pie = JSON.parse(data)[1];
-  var line = JSON.parse(data)[2];
+  var line = JSON.parse(data)[2][0];
   var sub_pie = JSON.parse(data)[3];
+  var loc = JSON.parse(data)[4];
   const cursor = client.db('sentiment').collection('tweets').find({tweet_id:{$gt:tweet_id_fg}}).sort({_id:1});
   const result = await cursor.toArray();
   if (result.length>0){
@@ -38,19 +39,31 @@ async function main(){
     console.log(result.length);
     result.forEach((res) => {
       var polarity = res.polarity;
+      var pol_flag = null;
       if (polarity > 0) {
         pie[0].value++;
         pos_obj++;
+        pol_flag = 1;
       } else if (polarity < 0) {
         pie[1].value++;
         neg_obj++;
+        pol_flag = -1;
       } else {
         pie[2].value++;
         neu_obj++;
+        pol_flag = 0;
       }
       var subjectivity = res.subjectivity;
       if (subjectivity >= 0.5) sub_pie[0].value++;
       else sub_pie[1].value++;
+      var lat = res.latitude;
+      var long = res.longitude;
+      if (lat !== null & long !== null){
+        if (pol_flag === 1) loc.push({id:'positive',latitude:lat,longitude:long});
+        else if (pol_flag === -1) loc.push({id:'negative',latitude:lat,longitude:long});
+        else if (pol_flag === 0) loc.push({id:'neutral',latitude:lat,longitude:long});
+        if (loc.length>50) loc.shift();
+      }
       tweet_id_fg = res.tweet_id;
     })
   }
@@ -62,12 +75,13 @@ async function main(){
     line[1].data.shift();
     line[2].data.shift();
   }
-  console.log(tweet_id_fg,pie,JSON.stringify(line),sub_pie)
-  fs.writeFileSync("checkpoint.json",JSON.stringify([tweet_id_fg,pie,line,sub_pie]))
+  console.log(tweet_id_fg,pie,JSON.stringify(line),sub_pie,loc)
+  fs.writeFileSync("checkpoint.json",JSON.stringify([tweet_id_fg,pie,[line,2],sub_pie,loc]))
   await client.close();
   io.emit("pie", pie);
-  io.emit("line",line);
+  io.emit("line",[line,2]);
   io.emit("sub_pie",sub_pie);
+  io.emit("loc",loc)
 }
 
 allData = () =>{
@@ -75,9 +89,11 @@ allData = () =>{
   var pie = JSON.parse(data)[1];
   var line = JSON.parse(data)[2];
   var sub_pie = JSON.parse(data)[3];
+  var loc = JSON.parse(data)[4];
   io.emit("pie", pie);
   io.emit("line",line);
   io.emit("sub_pie",sub_pie);
+  io.emit('loc',loc);
 }
 
 io.on("connection", (socket) => {
