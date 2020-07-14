@@ -1,97 +1,70 @@
 // require("dotenv").config();
-// const url = process.env.MAPBOX_URL;
-// const api = process.env.MAPBOX_API;
-
+// const Twit = require('twit');
 // const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-// var xmlhttp = new XMLHttpRequest();
-// xmlhttp.open('GET',url+'chennai%20india.json?access_token='+api+'&limit=1',false);
-// xmlhttp.send(null);
-// console.log(xmlhttp.responseText);
+// const xmlhttp = new XMLHttpRequest();
+// const unidecode = require('unidecode');
+// const apostolex = require('apos-to-lex-form');
+// const natural = require('natural');
+// const { WordTokenizer,SentimentAnalyzer, PorterStemmer } = natural;
+// const tokenizer = new WordTokenizer();
+// const SW = require('stopword');
+// const analyzer = new SentimentAnalyzer('English', PorterStemmer, 'afinn');
 
-const sqlite3 = require("sqlite3").verbose();
-let db = new sqlite3.Database("./twitter.db");
+// // twitter api setup
+// const T = new Twit({
+//     consumer_key:process.env.API_key,
+//     consumer_secret:process.env.API_secret_key,
+//     access_token:process.env.Access_token,
+//     access_token_secret:process.env.Access_token_secret,
+// });
 
-const allData = () => {
-    let sql = "SELECT * FROM sentiment";
-    let list = 
-    [{
-        id: 'positive',
-        color: 'hsl(198, 70%, 50%)',
-        data: []
-     },
-     {
-         id:'negative',
-         color: 'hsl(20, 70%, 50%)',
-         data: []
-     },
-     {
-         id:'neutral',
-         color:'hsl(90, 70%, 50%)',
-         data: []
-     }
-    ];
-    var pie = [
-        { id: "positive", label: "positive", value: 0 },
-        { id: "negative", label: "negative", value: 0 },
-        { id: "neutral", label: "neutral", value: 0 },
-      ];
-    db.all(sql, [], (err,rows) =>{
-        var flag = null;
-        var val = {pos:0,neg:0,neu:0};
-        if (err){
-            throw err;
-        };
-        rows.forEach((row) =>{
-            var sentiment = row.sentiment;
-            var date = row.created_at.slice(26,)+row.created_at.slice(3,16);
-            if (date === flag ){
-                // console.log(date,flag)
-                if (sentiment >= 0.2){
-                    pie[0].value++;
-                    val.pos++;
-                } else if (sentiment <= -0.2){
-                    pie[1].value++;
-                    val.neg++;
-                } else {
-                    pie[2].value++;
-                    val.neu++;
-                }
-            }
-            else{
-                // console.log(date,flag)
-                if (flag !== null){
-                    // console.log('not null')
-                    list[0].data.push({ x:flag, y:val.pos });
-                    list[1].data.push({ x:flag, y:val.neg });
-                    list[2].data.push({ x:flag, y:val.neu });
-                }
-                flag = date;
-                if (sentiment >= 0.2) {
-                    pie[0].value++;
-                    val.pos = 1;
-                    val.neg = 0;
-                    val.neu = 0;
-                } else if (sentiment <= -0.2) {
-                    pie[1].value++;
-                    val.pos = 0;
-                    val.neg = 1;
-                    val.neu = 0;
-                } else {
-                    pie[2].value++;
-                    val.pos = 0;
-                    val.neg = 0;
-                    val.neu = 1;
-                }
-            }
-        })
-        list[0].data.push({ x:flag, y:val.pos });
-        list[1].data.push({ x:flag, y:val.neg });
-        list[2].data.push({ x:flag, y:val.neu });
-        console.log(JSON.stringify(list,null,4))
-        console.log(pie)
-        io.emit("pie", pie);
-        io.emit("line", list);
-    });
-}
+// var connStr = "DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-06.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=fnp27448;PWD=vtp2m5f809tf-9wl;Security=SSL;"
 
-allData();
+// // text cleaner and sentiment extraction
+// const cleanText = (text) =>{
+//     const lextext = apostolex(text)
+//     const lowertext = lextext.toLowerCase()
+//     const reftext = lowertext.replace(/[^a-zA-Z\s]+/g, '');
+//     const tokenized = tokenizer.tokenize(reftext);
+//     const filtered = SW.removeStopwords(tokenized);
+//     const sentiment = analyzer.getSentiment(filtered);
+//     return sentiment;
+// }
+
+// // search parameters
+// const params = ['#covidindia','#covid_19india','#covid19india','#GCCCovid19SOS',
+// '#Covid19Chennai','#covid19#india','#IndiaFightsCOVID19','#lockdownindia'
+// ,'#Lockdown4','#lockdown4guidelines','#socialdistancingIndia','#stayathomeindia',
+// '#StayHomeIndia','#CoronaUpdatesInIndia']
+
+// const twitstream = () =>{
+//     var stream = T.stream('statuses/filter', { track: params })
+//     stream.on('tweet',(tweet) => {
+//         var unix = tweet.timestamp_ms;
+//         var cre = tweet.created_at;
+//         var t_id = tweet.id;
+//         var text = unidecode(tweet.text);
+//         var sentiment = cleanText(text);
+//         var lat = null;
+//         var lon = null;
+//         xmlhttp.open('GET','https://nominatim.openstreetmap.org/search/'+encodeURI(tweet.user.location)+'?format=json&limit=1&countrycodes=in',false);
+//         xmlhttp.send(null);
+//         var resp = JSON.parse(xmlhttp.responseText);
+//         if (resp.length > 0){
+//             lat = resp[0].lat;
+//             lon = resp[0].lon;
+//         }
+//         console.log(unix,t_id,sentiment,lat,lon)
+//         var obj = {
+//             unix:unix,
+//             cre:cre,
+//             t_id:t_id,
+//             sentiment:sentiment,
+//             lat:lat,
+//             lon:lon    
+//         }
+//     })
+// }
+
+// twitstream();
+const file = new File('checkpoint.json')
