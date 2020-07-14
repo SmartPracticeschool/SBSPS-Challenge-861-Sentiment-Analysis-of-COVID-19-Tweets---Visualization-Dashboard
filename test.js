@@ -68,17 +68,3 @@
 
 // twitstream();
 
-
-const {MongoClient} = require('mongodb');
-async function main(){
-    const uri = "mongodb+srv://admin:xgAsOUqdBbVrbBCV@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true";
-    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    try{
-        await client.connect();
-    } catch (e){
-        console.error(e)
-    } finally{
-        await client.close();
-    }
-}
-main().catch(console.err);
