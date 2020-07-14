@@ -7,7 +7,7 @@ const LineChart = ({ data }) => (
     margin={{ top: 20, right: 20, bottom: 60, left: 40 }}
     yScale={{ type: "linear" }}
     axisBottom={{
-      tickValues: `every ${data[1]} minutes`,
+      tickValues: `every ${data[1]}`,
     }}
     curve="monotoneX"
     colors={{ scheme: "dark2" }}

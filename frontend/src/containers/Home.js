@@ -18,7 +18,7 @@ const Home = (props) => {
           Sentiment Analysis of COVID-19 Tweets
         </Typography>
         <br />
-        <Grid item spacing={5}>
+        <Grid item>
           <Button
             variant="contained"
             color="primary"

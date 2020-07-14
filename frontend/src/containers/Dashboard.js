@@ -91,7 +91,8 @@ const Dashboard = (props) => {
       setPieData(data);
     });
     socket.on("line", (data) => {
-      var axis = 2;
+      var axis = "2 minutes";
+      console.log(data);
       setLineData([data, axis]);
       setLoading(false);
     });

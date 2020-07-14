@@ -3,12 +3,9 @@
 .md
 .env
 
-test.js
-test.txt
-
 /node_modules
 
-/frontend/
+/frontend
 /core
 
 #do not ignore
