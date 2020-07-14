@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
-const fs = require('fs');
+const fs = require("fs");
 
 const server = app.listen(process.env.PORT || 3001, () => {
   console.log(`server running on port ${process.env.PORT || 3001}`);
@@ -15,26 +15,33 @@ const server = app.listen(process.env.PORT || 3001, () => {
 // });
 const io = require("socket.io")(server);
 
-
 //check chekpoint.json exists
 
-
-const {MongoClient} = require('mongodb');
+const { MongoClient } = require("mongodb");
 const uri = `mongodb+srv://admin:${process.env.db_pass}@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true`;
-async function main(){
-  const now = new Date()
-  const time_str = now.getHours() + ':' + now.getMinutes()
-  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+async function main() {
+  const now = new Date();
+  const time_str = now.getHours() + ":" + now.getMinutes();
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   await client.connect();
-  console.log('connected')
-  var data = fs.readFileSync('checkpoint.json')
+  console.log("connected");
+  var data = fs.readFileSync("checkpoint.json");
   var tweet_id_fg = JSON.parse(data)[0];
   var pie = JSON.parse(data)[1];
   var line = JSON.parse(data)[2];
-  const cursor = client.db('sentiment').collection('tweets').find({tweet_id:{$gt:tweet_id_fg}}).sort({_id:1});
+  const cursor = client
+    .db("sentiment")
+    .collection("tweets")
+    .find({ tweet_id: { $gt: tweet_id_fg } })
+    .sort({ _id: 1 });
   const result = await cursor.toArray();
-  if (result.length>0){
-    var pos_obj = 0, neg_obj=0, neu_obj=0;
+  if (result.length > 0) {
+    var pos_obj = 0,
+      neg_obj = 0,
+      neu_obj = 0;
     console.log(result.length);
     result.forEach((res) => {
       var polarity = res.polarity;
@@ -49,38 +56,38 @@ async function main(){
         neu_obj++;
       }
       tweet_id_fg = res.tweet_id;
-    })
+    });
   }
-  line[0].data.push({x:time_str,y:pos_obj});
-  line[1].data.push({x:time_str,y:neg_obj});
-  line[2].data.push({x:time_str,y:neu_obj});
-  if (line[0].data.length>10){
+  line[0].data.push({ x: time_str, y: pos_obj });
+  line[1].data.push({ x: time_str, y: neg_obj });
+  line[2].data.push({ x: time_str, y: neu_obj });
+  if (line[0].data.length > 10) {
     line[0].data.shift();
     line[1].data.shift();
     line[2].data.shift();
   }
-  console.log(tweet_id_fg,pie,JSON.stringify(line))
-  fs.writeFileSync("checkpoint.json",JSON.stringify([tweet_id_fg,pie,line]))
+  console.log(tweet_id_fg, pie, JSON.stringify(line));
+  fs.writeFileSync("checkpoint.json", JSON.stringify([tweet_id_fg, pie, line]));
   await client.close();
   io.emit("pie", pie);
-  io.emit("line",line);
+  io.emit("line", line);
 }
 
-allData = () =>{
-  data = fs.readFileSync('checkpoint.json');
+allData = () => {
+  data = fs.readFileSync("checkpoint.json");
   var pie = JSON.parse(data)[1];
   var line = JSON.parse(data)[2];
   io.emit("pie", pie);
-  io.emit("line",line);
-}
+  io.emit("line", line);
+};
 
 io.on("connection", (socket) => {
-    // console.log("client connected");
-    // socket.on("dashboard", () => {
-    //   allData();
-    // });
+  console.log("client connected");
+  socket.on("dashboard", () => {
     allData();
+  });
+  // allData();
 });
 
 // main();
-setInterval(main,1000*60*2)
+setInterval(main, 1000 * 60 * 2);

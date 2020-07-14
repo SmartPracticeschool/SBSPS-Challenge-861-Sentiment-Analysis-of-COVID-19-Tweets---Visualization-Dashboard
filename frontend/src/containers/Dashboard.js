@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 });
 
 const tileStyle = {
-  height: "30vh",
+  height: "40vh",
   minHeight: "200px",
   minWidth: "400px",
   margin: "20px",
@@ -91,7 +91,8 @@ const Dashboard = (props) => {
       setPieData(data);
     });
     socket.on("line", (data) => {
-      setLineData(data);
+      var axis = 2;
+      setLineData([data, axis]);
       setLoading(false);
     });
   }, []);
