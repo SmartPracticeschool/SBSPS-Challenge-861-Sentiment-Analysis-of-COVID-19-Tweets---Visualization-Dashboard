@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const path = require("path");
 const fs = require('fs');
 
 const server = app.listen(process.env.PORT || 3001, () => {
@@ -16,6 +15,17 @@ const server = app.listen(process.env.PORT || 3001, () => {
 const io = require("socket.io")(server);
 
 //check chekpoint.json exists
+if (!fs.existsSync('checkpoint.json')){
+  console.log('file-absent');
+  const initial_json = ["1282795889715818497",
+  [{"id":"positive","label":"positive","value":0},
+  {"id":"negative","label":"negative","value":0},
+  {"id":"neutral","label":"neutral","value":0}],
+  [[{"id":"positive","data":[]},{"id":"negative","data":[]},{"id":"neutral","data":[]}],"2minutes"],
+  [[],"2minutes"],[]]
+  fs.writeFileSync('checkpoint.json',JSON.stringify(initial_json));
+  console.log('file-created');
+}
 
 const {MongoClient} = require('mongodb');
 const uri = `mongodb+srv://admin:${process.env.db_pass}@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true`;
