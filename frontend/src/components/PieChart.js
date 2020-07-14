@@ -19,7 +19,6 @@ const PieChart = ({ data }) => (
     radialLabelsLinkHorizontalLength={24}
     radialLabelsLinkStrokeWidth={1}
     radialLabelsLinkColor={{ from: "color" }}
-    enableSlicesLabels={false}
     slicesLabelsSkipAngle={10}
     slicesLabelsTextColor="rgba(255,255,255,0.87)"
     animate={true}
