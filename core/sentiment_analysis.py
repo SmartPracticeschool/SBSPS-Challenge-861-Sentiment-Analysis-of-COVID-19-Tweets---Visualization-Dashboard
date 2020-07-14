@@ -8,7 +8,9 @@ import time
 import requests
 import urllib.parse
 import ibm_db_dbi as db
-import cred
+from dotenv import load_dotenv,find_dotenv
+import os
+load_dotenv(find_dotenv())
 
 class listener(StreamListener):
   def on_connect(self):
@@ -30,9 +32,9 @@ class listener(StreamListener):
             if len(response) > 0:
               lati = response[0]["lat"]
               longi = response[0]["lon"]
-          print(data['timestamp_ms'], polarity, subjectivity , lati, longi)
-          c.execute("INSERT INTO sentiment (unix, pol, sub, lati, longi) VALUES (?, ?, ?, ?, ?)",
-                (data['timestamp_ms'], polarity, subjectivity, lati, longi))
+          # print(data['timestamp_ms'],data['id'], polarity, subjectivity , lati, longi)
+          c.execute("INSERT INTO sentiment (unix, id, pol, sub, add, lati, longi) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (data['timestamp_ms'], data['id'], polarity, subjectivity, address, lati, longi))
           conn.commit()
       except KeyError as e:
           print(str(e))
@@ -43,10 +45,10 @@ class listener(StreamListener):
 if __name__ == "__main__":
   conn = db.connect("DATABASE=BLUDB;HOSTNAME=dashdb-txn-sbox-yp-lon02-07.services.eu-gb.bluemix.net;PORT=50001;PROTOCOL=TCPIP;UID=rjm75059;PWD=r+b90qw9kxmpx2g2;Security=SSL;", "", "")
   c = conn.cursor()
-  ckey = cred.CONSUMER_KEY
-  csecret = cred.CONSUMER_TOKEN
-  atoken = cred.ACCESS_TOKEN
-  asecret = cred.ACCESS_TOKEN_SECRET
+  ckey = os.getenv('API_key')
+  csecret = os.getenv('API_secret_key')
+  atoken = os.getenv('Access_token')
+  asecret = os.getenv('Access_token_secret')
   try:
       auth = OAuthHandler(ckey, csecret)
       auth.set_access_token(atoken, asecret)
