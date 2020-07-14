@@ -22,7 +22,6 @@ const Map = ({ interactive, data }) => {
   const handleClick = (e, item) => {
     if (interactive) {
       e.preventDefault();
-      console.log(item);
       setPin(item);
     }
   };

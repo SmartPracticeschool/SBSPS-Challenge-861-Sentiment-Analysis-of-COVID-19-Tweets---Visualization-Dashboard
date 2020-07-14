@@ -5,7 +5,7 @@ const { MongoClient } = require("mongodb");
 const uri = `mongodb+srv://admin:${process.env.db_pass}@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true`;
 
 // function to initialize "checkpoint.js"
-const init = () => {
+const init = (axisInterval) => {
   const initial_json = [
     "1282795889715818497",
     [
@@ -19,24 +19,18 @@ const init = () => {
         { id: "negative", data: [] },
         { id: "neutral", data: [] },
       ],
-      "2 minutes",
+      axisInterval,
     ],
-    [[], "2 minutes"],
+    [[], axisInterval],
     [],
   ];
   fs.writeFileSync("checkpoint.json", JSON.stringify(initial_json));
 };
 
-// checking if "checkpoint.js exists"
-if (!fs.existsSync("checkpoint.json")) {
-  init();
-}
-
 // function that keeps running to update data
-const updater = async (io) => {
-  console.log("updateer");
+const updater = async (io, interval) => {
   if (!fs.existsSync("checkpoint.json")) {
-    init();
+    init(interval);
   }
   const now = new Date();
   const time_str = now
@@ -47,7 +41,6 @@ const updater = async (io) => {
     useUnifiedTopology: true,
   });
   await client.connect();
-  console.log("connected");
   var data = fs.readFileSync("checkpoint.json");
   var tweet_id_fg = JSON.parse(data)[0];
   var pie = JSON.parse(data)[1];
@@ -111,7 +104,7 @@ const updater = async (io) => {
     line[2].data.shift();
   }
   console.log(tweet_id_fg, pie, JSON.stringify(line), sub_bar);
-  const timeperiod = "2 minutes";
+  const timeperiod = interval;
   fs.writeFileSync(
     "checkpoint.json",
     JSON.stringify([
@@ -123,15 +116,15 @@ const updater = async (io) => {
     ])
   );
   io.emit("pie", pie);
-  io.emit("line", [line, "2 minutes"]);
-  io.emit("bar", [sub_bar, "2 minutes"]);
-  io.emit("locaion", loc);
+  io.emit("line", [line, interval]);
+  io.emit("bar", [sub_bar, interval]);
+  io.emit("location", loc);
   await client.close();
 };
 
-const allData = (io) => {
+const allData = (io, interval) => {
   if (!fs.existsSync("checkpoint.json")) {
-    init();
+    init(interval);
   }
   data = fs.readFileSync("checkpoint.json");
   var pie = JSON.parse(data)[1];
@@ -140,9 +133,10 @@ const allData = (io) => {
   var location = JSON.parse(data)[4];
   io.emit("pie", pie);
   io.emit("line", line);
-  io.emit("sub_bar", sub_bar);
+  io.emit("bar", sub_bar);
   io.emit("location", location);
 };
 
+exports.init = init;
 exports.allData = allData;
 exports.updater = updater;

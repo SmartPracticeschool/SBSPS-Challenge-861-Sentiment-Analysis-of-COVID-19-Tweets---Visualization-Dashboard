@@ -2,9 +2,16 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
-const { allData, updater } = require("./main.js");
+const fs = require("fs");
+const { allData, updater, init } = require("./main.js");
 
-const updateInterval = 1000 * 60 * 2;
+const updateInterval = 1000 * 60 * 5;
+const axisInterval = "5 minutes";
+
+// checking if "checkpoint.js exists"
+if (!fs.existsSync("checkpoint.json")) {
+  init(axisInterval);
+}
 
 // initialize express app
 const server = app.listen(process.env.PORT || 3001, () => {
@@ -26,9 +33,9 @@ const io = require("socket.io")(server);
 io.on("connection", (socket) => {
   console.log("client connected");
   socket.on("dashboard", () => {
-    allData(io);
+    allData(io, axisInterval);
   });
 });
 
 // calling the updater function
-setInterval(updater, updateInterval, io);
+setInterval(updater, updateInterval, io, axisInterval);

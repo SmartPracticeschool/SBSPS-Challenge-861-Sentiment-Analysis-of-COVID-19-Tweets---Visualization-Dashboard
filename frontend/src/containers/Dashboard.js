@@ -99,8 +99,9 @@ const Dashboard = (props) => {
     socket.on("line", (data) => {
       setLineData(data);
     });
-    socket.on("sub_bar", (data) => {
+    socket.on("bar", (data) => {
       console.log(data);
+      setBarData(data);
     });
     socket.on("location", (data) => {
       setLocationData(data);
@@ -165,7 +166,16 @@ const Dashboard = (props) => {
         >
           <Grid item xs={12} sm={12} lg={6}>
             <Paper classes={{ root: classes.paperTheme }} style={tileStyle}>
-              <LineChart data={lineData} />
+              <Typography
+                variant="h5"
+                align="center"
+                style={{ color: "rgba(255,255,255,0.87)" }}
+              >
+                Sentiment vs Time Graph
+              </Typography>
+              <div style={{ height: "90%" }}>
+                <LineChart data={lineData} />
+              </div>
             </Paper>
           </Grid>
 
@@ -181,14 +191,27 @@ const Dashboard = (props) => {
 
           <Grid item xs={12} sm={12} lg={6}>
             <Paper classes={{ root: classes.paperTheme }} style={tileStyle}>
-              <BarChart data={data} />
+              <Typography
+                variant="h5"
+                align="center"
+                style={{ color: "rgba(255,255,255,0.87)" }}
+              >
+                Subjectivity vs Time Graph
+              </Typography>
+              <div style={{ height: "90%" }}>
+                <BarChart data={barData} />
+              </div>
             </Paper>
           </Grid>
 
           <Grid item xs={12} sm={12} lg={6}>
             <Paper classes={{ root: classes.paperTheme }} style={tileStyle}>
-              <Typography variant="h5" align="center">
-                Polarity Distribution
+              <Typography
+                variant="h5"
+                align="center"
+                style={{ color: "rgba(255,255,255,0.87)" }}
+              >
+                Polarity Distribution (All-Time)
               </Typography>
               <div style={{ height: "90%" }}>
                 <PieChart data={pieData} interactive={false} />
