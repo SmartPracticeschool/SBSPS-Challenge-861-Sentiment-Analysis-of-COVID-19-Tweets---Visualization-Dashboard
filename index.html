@@ -11,6 +11,12 @@
             socket.on('line', (data) => {
                 console.log(data);
             })
+            socket.on('sub_bar',(data) => {
+                console.log(data);
+            })
+            socket.on('loc',(data) =>{
+                console.log(data);
+            })
             socket.on('error', console.error.bind(console));
             socket.on('message', console.log.bind(console));
             function addMessage(message) {
