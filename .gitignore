@@ -1,8 +1,4 @@
-/__pycache__
 /node_modules
 .env
 .env.production
-cred.py
-test.js
-/build
 checkpoint.json
