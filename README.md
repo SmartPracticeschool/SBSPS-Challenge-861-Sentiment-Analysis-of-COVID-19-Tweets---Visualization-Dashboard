@@ -1,7 +1,7 @@
 # Sentiment Analysis of COVID-19 Tweets - Visualization Dashboard
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Repository Size](https://img.shields.io/github/repo-size/nipun24/COVID19-tweet-analyser?style=plastic)](https://github.com/nipun24/COVID19-tweet-analyser/archive/master.zip)
+[![Repository Size](https://img.shields.io/github/repo-size/nipun24/COVID19-tweet-analyser)](https://github.com/nipun24/COVID19-tweet-analyser/archive/master.zip)
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Fcovid-19sentiment.eu-gb.cf.appdomain.cloud%2F)](https://covid-19sentiment.eu-gb.cf.appdomain.cloud/)
 
 Twitter has always been a platform where people come together to put forth their opinions about issues. The current global concern is COVID-19 and this has led to a tremendous uproar of tweets relating to COVID-19. The large amounts of tweets produced definitely provide us the opportunity to analyze the tweets for all possible information - from people's activity and involvement to how the people are emotionally affected by the pandemic.
