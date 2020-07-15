@@ -2,7 +2,7 @@ const fs = require("fs");
 const { MongoClient } = require("mongodb");
 
 // mongoDB URL
-const uri = `mongodb+srv://admin:${process.env.db_pass}@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true`;
+const uri = `mongodb+srv://admin:${process.env.MONGODB_PASS}@cluster0.ch6ky.mongodb.net/sentiment?retryWrites=true&w=majority&tls=true`;
 
 // function to initialize "checkpoint.js"
 const init = (axisInterval) => {
@@ -32,15 +32,16 @@ const updater = async (io, interval) => {
   if (!fs.existsSync("checkpoint.json")) {
     init(interval);
   }
-  const now = new Date();
-  const time_str = now
-    .toLocaleTimeString("en-US", { hour12: false })
-    .slice(0, 5);
+  const time_str = new Date().toLocaleTimeString("en-US", {
+    timeZone: "Asia/Kolkata",
+    hour12: false,
+  });
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
   await client.connect();
+  console.log("db connected");
   var data = fs.readFileSync("checkpoint.json");
   var tweet_id_fg = JSON.parse(data)[0];
   var pie = JSON.parse(data)[1];
@@ -53,13 +54,13 @@ const updater = async (io, interval) => {
     .find({ tweet_id: { $gt: tweet_id_fg } })
     .sort({ _id: 1 });
   const result = await cursor.toArray();
+  console.log(result);
+  var pos_obj = 0,
+    neg_obj = 0,
+    neu_obj = 0;
+  var factual = 0,
+    emotional = 0;
   if (result.length > 0) {
-    var pos_obj = 0,
-      neg_obj = 0,
-      neu_obj = 0;
-    var factual = 0,
-      emotional = 0;
-    console.log(result.length);
     result.forEach((res) => {
       var polarity = res.polarity;
       var pol_flag = null;
@@ -93,7 +94,11 @@ const updater = async (io, interval) => {
       tweet_id_fg = res.tweet_id;
     });
   }
-  sub_bar.push({ x: time_str, objectivity: factual, subjectivity: emotional });
+  sub_bar.push({
+    x: time_str,
+    objectivity: factual,
+    subjectivity: emotional,
+  });
   if (sub_bar.length > 7) sub_bar.shift();
   line[0].data.push({ x: time_str, y: pos_obj });
   line[1].data.push({ x: time_str, y: neg_obj });
@@ -103,7 +108,6 @@ const updater = async (io, interval) => {
     line[1].data.shift();
     line[2].data.shift();
   }
-  console.log(tweet_id_fg, pie, JSON.stringify(line), sub_bar);
   const timeperiod = interval;
   fs.writeFileSync(
     "checkpoint.json",

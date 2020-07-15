@@ -2,6 +2,7 @@
 .gitignore
 .md
 .env
+checkpoint.json
 
 /node_modules
 

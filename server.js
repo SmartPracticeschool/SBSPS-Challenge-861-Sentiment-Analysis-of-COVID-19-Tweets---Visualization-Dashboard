@@ -5,8 +5,8 @@ const path = require("path");
 const fs = require("fs");
 const { allData, updater, init } = require("./main.js");
 
-const updateInterval = 1000 * 60 * 5;
-const axisInterval = "5 minutes";
+const updateInterval = 1000 * 60 * 30;
+const axisInterval = "30 minutes";
 
 // checking if "checkpoint.js exists"
 if (!fs.existsSync("checkpoint.json")) {
