@@ -65,7 +65,7 @@ The project is deployed on IBM Cloud Foundry. [Link](https://covid-19sentiment.e
 
 - [Nipun Haldar](https://github.com/nipun24)
 - [Rahul Hebbar](https://github.com/rahul-hebbar)
-- [Karri Keshava](https://github.com/kesava-karri)
+- [Kesava Karri](https://github.com/kesava-karri)
 - [Aditya Kumar](https://github.com/ak224001)
 
 ## License
